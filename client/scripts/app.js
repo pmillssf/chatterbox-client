@@ -1,6 +1,24 @@
 // YOUR CODE HERE:
 $(document).ready(
   function () {
+    var $messageInput = $('<div></div>');
+    var $roomInput = $('<div></div>');
+    var $roomselect = $('<div></div>');
+    var $roomOptions = $('<select id="roomOptions"></select>');
+    $messageInput.append('<input type="text" id="message" placeholder="Write a message!"></input>');
+    $messageInput.append('<button id="submit">submit</button>');
+    $roomInput.append('<input type="text" id="roomname" placeholder="Create a room!"></input>');
+    $roomInput.append('<button id="CreateRoom">submit</button>');
+    // $roomOptions.append('<option value="Lobby" defaultSelected>Lobby</option>');
+    // $roomOptions.append('<option value="8 floor">8 floor</option>');
+    $roomselect.append($roomOptions);
+    $('#main').append($messageInput);
+    $('#main').append($roomInput);
+    $('#main').append($roomselect);
+
+
+
+
     app.init();
 
     $('#submit').on('click', function() {
@@ -29,16 +47,20 @@ $(document).ready(
     });
 
     $('#roomOptions').change(function() {
+      var selectedRoom = $('#roomOptions').val();
       app.roomname = $('#roomOptions').val();
       app.clearMessages();
       app.fetch();
+
+
     });
   }
 );
 var app = {
   server: 'http://parse.sfm8.hackreactor.com/chatterbox/classes/messages',
   dataPulled: undefined,
-  roomname: 'Lobby',
+  roomname: 'lobby',
+  allRooms: {},
   init: function() {
     app.fetch();
   },
@@ -65,7 +87,7 @@ var app = {
     // This is the url you should use to communicate with the parse API server.
       url: app.server,
       data: 'order=-createdAt',
-      data: 'limit=1000',
+      data: 'limit=10000',
       type: 'GET',
       contentType: 'application/json',
       success: function (data) {
@@ -75,8 +97,9 @@ var app = {
             app.renderMessage(app.dataPulled.results[i]); 
           }
         }
+        app.renderRoom();
+        $("#roomOptions").val(app.roomname).prop('selected', true);
         //console.log('chatterbox: Message sent');
-        console.log(data);
         //return data;
       },
       error: function (data) {
@@ -98,6 +121,21 @@ var app = {
     $('#chats').prepend($containerDiv);
   },
   renderRoom: function(roomname) {
+    $('#roomOptions').html('');
+    for (var i = 0; i < app.dataPulled.results.length; i++) {
+      if (app.dataPulled.results[i].roomname !== undefined) {
+        app.allRooms[app.cleanString(app.dataPulled.results[i].roomname)] = 1;
+      }
+    }
+    for (var room in app.allRooms) {
+      var $newRoomOption = $('<option></option>');
+      $newRoomOption.append(room);
+      $newRoomOption.attr('value', room);
+      $newRoomOption.addClass(room);
+      $('#roomOptions').append($newRoomOption);
+
+    }
+
     if (roomname !== undefined) {
       var $newRoomOption = $('<option selected></option>');
 
@@ -105,11 +143,11 @@ var app = {
         $newRoomOption.append(roomname);
         $newRoomOption.attr('value', roomname);
         $('#roomOptions').prepend($newRoomOption);
+
       }
     }
   },
   cleanString: function(unsafe) {
-    console.log(unsafe);
     // Found at http://stackoverflow.com/questions/6234773/can-i-escape-html-special-chars-in-javascript
     return unsafe
    .replace(/&/g, "&amp;")
