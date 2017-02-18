@@ -37,12 +37,32 @@ $(document).ready(
     $('#CreateRoom').on('click', function() {
       //debugger;
       var $roomnameText = $('input#roomname').val();
-      var $newRoomOption = $('<option selected></option>');
+      // var $newRoomOption = $('<option selected></option>');
       if ($roomnameText.length > 0 && $roomnameText !== undefined) {
-        $newRoomOption.append(app.cleanString($roomnameText));
-        $newRoomOption.attr('value', app.cleanString($roomnameText));
-        $('#roomOptions').append($newRoomOption);
-        // $('#roomOptions:last-child').attr('selected', 'selected');
+        // $newRoomOption.append(app.cleanString($roomnameText));
+        // $newRoomOption.attr('value', app.cleanString($roomnameText));
+        // $('#roomOptions').append($newRoomOption);
+        app.roomname = app.cleanString($roomnameText);
+        var message = {};
+        message.username = window.location.href.slice(window.location.href.indexOf('=') + 1);
+        message.text = 'Welcome to ' + app.roomname;
+        message.roomname = app.roomname;
+        app.clearMessages();
+        $.ajax({
+          url: app.server,
+          type: 'POST',
+          data: JSON.stringify(message),
+          contentType: 'application/json',
+          success: function (data) {
+            console.log('chatterbox: Message sent');
+            app.fetch();
+          },
+          error: function (data) {
+            // See: https://developer.mozilla.org/en-US/docs/Web/API/console.error
+            console.error('chatterbox: Failed to send message', data);
+          }
+        });
+        // app.fetch();
       }
     });
 
