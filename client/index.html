@@ -43,35 +43,5 @@
       </div>
     </div>
     <div id="chats"></div>
-    <script type="text/javascript">
-      $('#submit').on('click', function() {
-        var $messageText = $('input#message').val();
-        var message = {};
-        if ($messageText.length > 0) {
-          message.username = window.location.href.slice(window.location.href.indexOf('=') + 1);
-          message.text = $messageText;
-          message.roomname = app.roomname;
-          app.send(message);
-        }
-      });
-      
-      $('#CreateRoom').on('click', function() {
-        //debugger;
-        var $roomnameText = $('input#roomname').val();
-        var $newRoomOption = $('<option selected></option>');
-        if ($roomnameText.length > 0 && $roomnameText !== undefined) {
-          $newRoomOption.append(app.cleanString($roomnameText));
-          $newRoomOption.attr('value', app.cleanString($roomnameText));
-          $('#roomOptions').append($newRoomOption);
-          // $('#roomOptions:last-child').attr('selected', 'selected');
-        }
-      });
-
-      $('#roomOptions').change(function() {
-        app.roomname = $('#roomOptions').val();
-        app.clearMessages();
-        app.fetch();
-      });
-    </script>
   </body>
 </html>

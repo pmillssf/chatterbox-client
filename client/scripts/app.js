@@ -1,4 +1,40 @@
 // YOUR CODE HERE:
+$(document).ready(
+  function () {
+    app.init();
+
+    $('#submit').on('click', function() {
+      var $messageText = $('input#message').val();
+      var message = {};
+      if ($messageText.length > 0) {
+        message.username = window.location.href.slice(window.location.href.indexOf('=') + 1);
+        message.text = $messageText;
+        message.roomname = app.roomname;
+        app.send(message);
+        app.clearMessages();
+        app.fetch();
+      }
+    });
+    
+    $('#CreateRoom').on('click', function() {
+      //debugger;
+      var $roomnameText = $('input#roomname').val();
+      var $newRoomOption = $('<option selected></option>');
+      if ($roomnameText.length > 0 && $roomnameText !== undefined) {
+        $newRoomOption.append(app.cleanString($roomnameText));
+        $newRoomOption.attr('value', app.cleanString($roomnameText));
+        $('#roomOptions').append($newRoomOption);
+        // $('#roomOptions:last-child').attr('selected', 'selected');
+      }
+    });
+
+    $('#roomOptions').change(function() {
+      app.roomname = $('#roomOptions').val();
+      app.clearMessages();
+      app.fetch();
+    });
+  }
+);
 var app = {
   server: 'http://parse.sfm8.hackreactor.com/chatterbox/classes/messages',
   dataPulled: undefined,
@@ -29,7 +65,7 @@ var app = {
     // This is the url you should use to communicate with the parse API server.
       url: app.server,
       data: 'order=-createdAt',
-      data: 'limit=400',
+      data: 'limit=1000',
       type: 'GET',
       contentType: 'application/json',
       success: function (data) {
@@ -59,7 +95,7 @@ var app = {
     $textDiv.append(app.cleanString(message.text));
     $usernameDiv.append(app.cleanString(message.username));
     $containerDiv.append($usernameDiv, $textDiv);
-    $('#chats').append($containerDiv);
+    $('#chats').prepend($containerDiv);
   },
   renderRoom: function(roomname) {
     if (roomname !== undefined) {
@@ -68,7 +104,7 @@ var app = {
       if (roomname.length > 0) {
         $newRoomOption.append(roomname);
         $newRoomOption.attr('value', roomname);
-        $('#roomOptions').append($newRoomOption);
+        $('#roomOptions').prepend($newRoomOption);
       }
     }
   },
@@ -85,6 +121,6 @@ var app = {
 };
 
 
-app.fetch();
+// app.init();
 
 // var username = window.location.href.slice(window.location.href.indexOf('=') + 1);
