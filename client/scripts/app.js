@@ -66,3 +66,5 @@ $.ajax({
 });
 
 app.fetch();
+
+// var username = window.location.href.slice(window.location.href.indexOf('=') + 1);
