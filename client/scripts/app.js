@@ -2,16 +2,7 @@
 var app = {
   server: 'http://parse.sfm8.hackreactor.com/chatterbox/classes/messages',
   dataPulled: undefined,
-  getMessage: $('#submit').on('click', function() {
-    debugger;
-    var $messageText = $('input#message').val().text();
-    var message = {};
-    if ($messageText.length > 0) {
-      message.text = $messageText;
-      message.username = window.location.href.slice(window.location.href.indexOf('=') + 1);
-      app.send(message);
-    }
-  }),
+  roomname: 'Lobby',
   init: function() {},
   send: function(message) {
     $.ajax({
@@ -41,7 +32,11 @@ var app = {
       contentType: 'application/json',
       success: function (data) {
         app.dataPulled = data;
-        app.renderRoom();
+        for (var i = 0; i < app.dataPulled.results.length; i++) {
+          if (app.dataPulled.results[i].text !== undefined && app.dataPulled.results[i].username !== undefined && app.dataPulled.results[i].roomname === app.roomname) {
+            app.renderMessage(app.dataPulled.results[i]); 
+          }
+        }
         //console.log('chatterbox: Message sent');
         console.log(data);
         //return data;
@@ -52,7 +47,9 @@ var app = {
       }
     });
   },
-  clearMessages: function() {},
+  clearMessages: function() {
+    $('#chats').html('');
+  },
   renderMessage: function(message) {
     var $containerDiv = $('<div><div>');
     var $usernameDiv = $('<div><div>');
@@ -63,11 +60,7 @@ var app = {
     $('#chats').append($containerDiv);
   },
   renderRoom: function() {
-    for (var i = 0; i < app.dataPulled.results.length; i++) {
-      if (app.dataPulled.results[i].text !== undefined && app.dataPulled.results[i].username !== undefined) {
-        this.renderMessage(app.dataPulled.results[i]); 
-      }
-    }
+
   },
   cleanString: function(unsafe) {
     console.log(unsafe);
@@ -83,15 +76,5 @@ var app = {
 
 
 app.fetch();
-$('#submit').on('click', function() {
-  debugger;
-  var $messageText = $('input#message').text();
-  var message = {};
-  if ($messageText.length > 0) {
-    message.text = $messageText;
-    message.username = window.location.href.slice(window.location.href.indexOf('=') + 1);
-    app.send(message);
-  }
-});
 
 // var username = window.location.href.slice(window.location.href.indexOf('=') + 1);
