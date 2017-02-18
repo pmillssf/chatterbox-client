@@ -28,22 +28,49 @@
       <h1>chatterbox</h1>
       <!-- Your HTML goes here! -->
       <div>
-        <input type="text" id="message"></input>
+        <input type="text" id="message" placeholder="Write a message!"></input>
         <button id="submit">submit</button>
+      </div>
+      <div>
+        <input type="text" id="roomname" placeholder="Create a room!"></input>
+        <button id="CreateRoom">submit</button>
+      </div>
+      <div>
+        <select id="roomOptions">
+          <option value="Lobby" defaultSelected>Lobby</option>
+          <option value="8 floor">8 floor</option>
+        </select>
       </div>
     </div>
     <div id="chats"></div>
     <script type="text/javascript">
       $('#submit').on('click', function() {
-        debugger;
         var $messageText = $('input#message').val();
         var message = {};
         if ($messageText.length > 0) {
           message.username = window.location.href.slice(window.location.href.indexOf('=') + 1);
           message.text = $messageText;
-          message.roomname =  'Lobby';
+          message.roomname = app.roomname;
           app.send(message);
         }
+      });
+      
+      $('#CreateRoom').on('click', function() {
+        //debugger;
+        var $roomnameText = $('input#roomname').val();
+        var $newRoomOption = $('<option selected></option>');
+        if ($roomnameText.length > 0 && $roomnameText !== undefined) {
+          $newRoomOption.append(app.cleanString($roomnameText));
+          $newRoomOption.attr('value', app.cleanString($roomnameText));
+          $('#roomOptions').append($newRoomOption);
+          // $('#roomOptions:last-child').attr('selected', 'selected');
+        }
+      });
+
+      $('#roomOptions').change(function() {
+        app.roomname = $('#roomOptions').val();
+        app.clearMessages();
+        app.fetch();
       });
     </script>
   </body>

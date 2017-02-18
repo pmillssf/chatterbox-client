@@ -3,7 +3,9 @@ var app = {
   server: 'http://parse.sfm8.hackreactor.com/chatterbox/classes/messages',
   dataPulled: undefined,
   roomname: 'Lobby',
-  init: function() {},
+  init: function() {
+    app.fetch();
+  },
   send: function(message) {
     $.ajax({
       // This is the url you should use to communicate with the parse API server.
@@ -51,16 +53,24 @@ var app = {
     $('#chats').html('');
   },
   renderMessage: function(message) {
-    var $containerDiv = $('<div><div>');
-    var $usernameDiv = $('<div><div>');
-    var $textDiv = $('<div><div>');
+    var $containerDiv = $('<div></div>');
+    var $usernameDiv = $('<div></div>');
+    var $textDiv = $('<div></div>');
     $textDiv.append(app.cleanString(message.text));
     $usernameDiv.append(app.cleanString(message.username));
     $containerDiv.append($usernameDiv, $textDiv);
     $('#chats').append($containerDiv);
   },
-  renderRoom: function() {
+  renderRoom: function(roomname) {
+    if (roomname !== undefined) {
+      var $newRoomOption = $('<option selected></option>');
 
+      if (roomname.length > 0) {
+        $newRoomOption.append(roomname);
+        $newRoomOption.attr('value', roomname);
+        $('#roomOptions').append($newRoomOption);
+      }
+    }
   },
   cleanString: function(unsafe) {
     console.log(unsafe);
