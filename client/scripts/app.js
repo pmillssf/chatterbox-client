@@ -6,7 +6,7 @@ $(document).ready(
     var $roomselect = $('<div></div>');
     var $roomOptions = $('<select id="roomOptions"></select>');
     $messageInput.append('<input type="text" id="message" placeholder="Write a message!"></input>');
-    $messageInput.append('<button id="submit">submit</button>');
+    $messageInput.append('<button id="send" class="submit">submit</button>');
     $roomInput.append('<input type="text" id="roomname" placeholder="Create a room!"></input>');
     $roomInput.append('<button id="CreateRoom">submit</button>');
     // $roomOptions.append('<option value="Lobby" defaultSelected>Lobby</option>');
@@ -21,17 +21,8 @@ $(document).ready(
 
     app.init();
 
-    $('#submit').on('click', function() {
-      var $messageText = $('input#message').val();
-      var message = {};
-      if ($messageText.length > 0) {
-        message.username = window.location.href.slice(window.location.href.indexOf('=') + 1);
-        message.text = $messageText;
-        message.roomname = app.roomname;
-        app.send(message);
-        app.clearMessages();
-        app.fetch();
-      }
+    $('#send').on('click', function() {
+      app.handleSubmit();
     });
     
     $('#CreateRoom').on('click', function() {
@@ -75,11 +66,7 @@ $(document).ready(
 
     });
     $('body').on('click', '.username', function() {
-      var user = $(this).parent()[0].className.split(' ')[0];
-      console.log($(this).parent()[0]);
-      console.log($(this).parent()[0].className);
-      console.log($('.' + user));
-      $('.' + user).toggleClass('friend'); 
+      app.handleUsernameClick.call(this);
     });
 
   }
@@ -187,6 +174,23 @@ var app = {
   },
 
   handleUsernameClick: function() {
+    var user = $(this).parent()[0].className.split(' ')[0];
+    console.log($(this).parent()[0]);
+    console.log($(this).parent()[0].className);
+    console.log($('.' + user));
+    $('.' + user).toggleClass('friend'); 
+  },
+  handleSubmit: function() {
+    var $messageText = $('input#message').val();
+    var message = {};
+    if ($messageText.length > 0) {
+      message.username = window.location.href.slice(window.location.href.indexOf('=') + 1);
+      message.text = $messageText;
+      message.roomname = app.roomname;
+      app.send(message);
+      app.clearMessages();
+      app.fetch();
+    }
 
   }
 };
