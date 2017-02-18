@@ -62,7 +62,7 @@ $(document).ready(
             console.error('chatterbox: Failed to send message', data);
           }
         });
-        // app.fetch();
+        
       }
     });
 
@@ -74,6 +74,14 @@ $(document).ready(
 
 
     });
+    $('body').on('click', '.username', function() {
+      var user = $(this).parent()[0].className.split(' ')[0];
+      console.log($(this).parent()[0]);
+      console.log($(this).parent()[0].className);
+      console.log($('.' + user));
+      $('.' + user).toggleClass('friend'); 
+    });
+
   }
 );
 var app = {
@@ -92,7 +100,6 @@ var app = {
       data: JSON.stringify(message),
       contentType: 'application/json',
       success: function (data) {
-        debugger;
         console.log('chatterbox: Message sent');
         console.log(data);
       },
@@ -133,29 +140,15 @@ var app = {
   },
   renderMessage: function(message) {
     var $containerDiv = $('<div></div>');
-    var $usernameDiv = $('<div></div>');
+    var $usernameDiv = $('<div class="username"></div>');
     var $textDiv = $('<div></div>');
     $textDiv.append(app.cleanString(message.text));
     $usernameDiv.append(app.cleanString(message.username));
+    $containerDiv.addClass(app.cleanString(message.username));
     $containerDiv.append($usernameDiv, $textDiv);
     $('#chats').prepend($containerDiv);
   },
   renderRoom: function(roomname) {
-    $('#roomOptions').html('');
-    for (var i = 0; i < app.dataPulled.results.length; i++) {
-      if (app.dataPulled.results[i].roomname !== undefined) {
-        app.allRooms[app.cleanString(app.dataPulled.results[i].roomname)] = 1;
-      }
-    }
-    for (var room in app.allRooms) {
-      var $newRoomOption = $('<option></option>');
-      $newRoomOption.append(room);
-      $newRoomOption.attr('value', room);
-      $newRoomOption.addClass(room);
-      $('#roomOptions').append($newRoomOption);
-
-    }
-
     if (roomname !== undefined) {
       var $newRoomOption = $('<option selected></option>');
 
@@ -165,7 +158,23 @@ var app = {
         $('#roomOptions').prepend($newRoomOption);
 
       }
+    } else {
+      $('#roomOptions').html('');
+      for (var i = 0; i < app.dataPulled.results.length; i++) {
+        if (app.dataPulled.results[i].roomname !== undefined) {
+          app.allRooms[app.cleanString(app.dataPulled.results[i].roomname)] = 1;
+        }
+      }
+      for (var room in app.allRooms) {
+        var $newRoomOption = $('<option></option>');
+        $newRoomOption.append(room);
+        $newRoomOption.attr('value', room);
+        $newRoomOption.addClass(room);
+        $('#roomOptions').append($newRoomOption);
+      }
+      
     }
+
   },
   cleanString: function(unsafe) {
     // Found at http://stackoverflow.com/questions/6234773/can-i-escape-html-special-chars-in-javascript
@@ -176,6 +185,10 @@ var app = {
    .replace(/"/g, "&quot;")
    .replace(/'/g, "&#039;");
   },
+
+  handleUsernameClick: function() {
+
+  }
 };
 
 
