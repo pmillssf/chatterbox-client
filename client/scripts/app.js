@@ -5,7 +5,9 @@ $(document).ready(
     var $messageInput = $('<div></div>');
     var $roomInput = $('<div></div>');
     var $roomselect = $('<div></div>');
+    var $refreshMessage = $('<div></div>');
     var $roomOptions = $('<select id="roomOptions"></select>');
+    $refreshMessage.append('<button class="refreshButton">Refresh the stream!</button>');
     $messageInput.append('<input type="text" id="message" placeholder="Write a message!"></input>');
     $messageInput.append('<button id="send" class="submit">submit</button>');
     $roomInput.append('<input type="text" id="roomname" placeholder="Create a room!"></input>');
@@ -14,6 +16,7 @@ $(document).ready(
     $('#main').append($messageInput);
     $('#main').append($roomInput);
     $('#main').append($roomselect);
+    $('#main').append($refreshMessage);
 
     // Initalize app
     app.init();
@@ -22,6 +25,12 @@ $(document).ready(
     $('#send').on('click', function() {
       app.handleSubmit();
     });
+
+    $('.refreshButton').on('click', function() {
+      console.log('refreshed');
+      app.fetch();
+    });
+
 
     // Listener for creating rooms
     $('#CreateRoom').on('click', function() {
@@ -121,7 +130,7 @@ var app = {
   renderMessage: function(message) {
     var $containerDiv = $('<div></div>');
     var $usernameDiv = $('<div class="username"></div>');
-    var $textDiv = $('<div></div>');
+    var $textDiv = $('<div class="message"></div>');
     $textDiv.append(app.cleanString(message.text));
     $usernameDiv.append(app.cleanString(message.username));
     $containerDiv.addClass(app.cleanString(message.username));

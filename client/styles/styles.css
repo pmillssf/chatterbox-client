@@ -2,14 +2,15 @@ body {
     background: #eee;
     text-align: center;
     padding: 0 25px;
-    font-family: arial, sans-serif;
+    font-size: 18px;
+    font-family: 'Vollkorn', serif;
 }
 
 #main, #chats {
     width: 500px;
     margin: auto;
     text-align: left;
-    background: white;
+    background: #0090da;
     padding: 50px 60px;
     border: solid #ddd;
     border-width: 0 1px 1px 1px;
@@ -20,6 +21,7 @@ body {
     font-size: 35px;
     margin-bottom: 5px;
     padding: 5px;
+    font-family: 'Vollkorn', serif;
 }
 
 #main h1 span {
@@ -88,5 +90,19 @@ form input[type=text] {
     background-color: #0090da;
     font-weight: bold;
 }
+.username {
+  font-size: 25px;
+  font-family: 'Exo', sans-serif;
+  border: 2px solid white;
+  border-bottom: 1px solid white;
+  margin-top: 10px;
+  text-align: center;
 
+}
 
+.message {
+  border: 2px solid white;
+  border-top: 1px solid white;
+  margin-bottom: 5px;
+  text-align: center;
+}
